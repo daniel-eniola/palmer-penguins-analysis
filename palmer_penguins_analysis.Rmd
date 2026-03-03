@@ -1,0 +1,248 @@
+---
+title: "Palmer Penguins Analysis"
+author: "Daniel Eniola"
+date: "2026-02-21"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This report explores the **Palmer Penguins dataset**, which contains data on 344 penguins from three species — Adelie, Chinstrap, and Gentoo — observed across three islands in the Palmer Archipelago, Antarctica. The data were collected by Dr. Kristen Gorman.
+
+The goal of this analysis is to examine the physical characteristics of each species, explore ecological differences across islands, and visualize key relationships within the dataset. This analysis demonstrates how exploratory data analysis and visualization can reveal biological differences among species and highlight ecological patterns across habitats.
+
+---
+
+## Setup
+```{r libraries, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(palmerpenguins)
+```
+
+---
+
+## Data Exploration
+```{r explore}
+head(penguins)
+nrow(penguins)
+ncol(penguins)
+glimpse(penguins)
+```
+
+### Checking for Missing Values
+```{r missing}
+colSums(is.na(penguins))
+```
+
+---
+
+## Calculations
+
+### Summary Statistics by Species
+```{r summary_by_species}
+penguins %>%
+  group_by(species) %>%
+  summarise(
+    avg_bill_length = mean(bill_length_mm, na.rm = TRUE),
+    mid_bill_length = median(bill_length_mm, na.rm = TRUE),
+    min_bill_length = min(bill_length_mm, na.rm = TRUE),
+    max_bill_length = max(bill_length_mm, na.rm = TRUE),
+    sd_bill_length = sd(bill_length_mm, na.rm = TRUE),
+    avg_flipper_length = mean(flipper_length_mm, na.rm = TRUE),
+    mid_flipper_length = median(flipper_length_mm, na.rm = TRUE),
+    min_flipper_length = min(flipper_length_mm, na.rm = TRUE),
+    max_flipper_length = max(flipper_length_mm, na.rm = TRUE),
+    sd_flipper_length = sd(flipper_length_mm, na.rm = TRUE)
+  )
+```
+
+### Heaviest Island by Average Body Mass
+```{r island_mass}
+penguins %>%
+  group_by(island) %>%
+  summarise(avg_body_mass = mean(body_mass_g, na.rm = TRUE)) %>%
+  arrange(-avg_body_mass)
+```
+
+### Bill Ratio
+```{r bill_ratio}
+penguins <- penguins %>%
+  mutate(bill_ratio = bill_length_mm / bill_depth_mm)
+head(penguins)
+```
+
+```{r bill_ratio_select}
+penguins %>%
+  select(species, bill_length_mm, bill_depth_mm, bill_ratio) %>%
+  head()
+```
+
+### Bill Ratio Analysis
+```{r bill_ratio_analysis}
+penguins %>%
+  group_by(species) %>%
+  summarise(avg_bill_ratio = mean(bill_ratio, na.rm = TRUE)) %>%
+  arrange(-avg_bill_ratio)
+```
+
+---
+
+## Bill Ratio Visualization
+```{r bill_ratio_viz, warning=FALSE}
+ggplot(data = penguins) +
+  geom_violin(mapping = aes(x = species, y = bill_ratio, fill = species),
+    alpha = 0.4,
+    trim = FALSE,
+    na.rm = TRUE) +
+  geom_boxplot(mapping = aes(x = species, y = bill_ratio),
+    width = 0.2,
+    fill = "white",
+    outlier.shape = NA,
+    na.rm = TRUE) +
+  stat_summary(mapping = aes(x = species, y = bill_ratio),
+    fun = "median",
+    geom = "point",
+    color = "black",
+    size = 2,
+    na.rm = TRUE) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  labs(title = "Palmer Penguins: Bill Ratio by Species",
+    subtitle = "Bill Length / Bill Depth (higher = longer & narrower bill)",
+    x = "Species",
+    y = "Bill Ratio",
+    caption  = "Data collected by Dr. Kristen Gorman") +
+  theme_minimal(base_size = 10) +
+  theme(legend.position = "none")
+```
+
+---
+
+### Male vs Female Count by Species
+```{r sex_count}
+penguins %>%
+  filter(!is.na(sex)) %>%
+  count(species, sex)
+```
+
+### Male vs Female Percentage by Species
+```{r sex_percentage}
+penguins %>%
+  filter(!is.na(sex)) %>%
+  group_by(species, sex) %>%
+  summarise(count = n(), .groups = "drop_last") %>%
+  mutate(percentage = count / sum(count) * 100)
+```
+
+### Male vs Female Visualization
+```{r sex_viz, warning=FALSE}
+penguins %>%
+  filter(!is.na(sex)) %>%
+  ggplot(mapping = aes(x = species, fill = sex)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Palmer Penguins: Male vs Female Count by Species",
+       subtitle = "Excluding missing sex values",
+       x = "Species",
+       y = "Count",
+       fill = "Sex",
+       caption = "Data collected by Dr. Kristen Gorman") +
+  scale_fill_manual(values = c("female" = "hotpink", "male" = "steelblue")) +
+  theme_minimal(base_size = 10)
+```
+
+---
+
+### Island Biodiversity
+```{r island_biodiversity}
+penguins %>%
+  group_by(island, species) %>%
+  summarise(count = n(), .groups = "drop")
+```
+
+### Island Biodiversity Visualization
+```{r island_biodiversity_viz}
+penguins %>%
+  group_by(island, species) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  ggplot(mapping = aes(x = island, y = count, fill = species)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Penguin Species Count by Island",
+       x = "Island",
+       y = "Count",
+       fill = "Species",
+       caption = "Data collected by Dr. Kristen Gorman") +
+  theme_minimal(base_size = 10)
+```
+
+---
+
+## Body Mass vs. Flipper Length Visualization
+```{r scatter_plot, warning=FALSE}
+ggplot(data = penguins) +
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, colour = species), na.rm = TRUE) +
+  labs(title = "Palmer Penguins: Body Mass vs. Flipper Length",
+       x = "Flipper Length (mm)",
+       y = "Body Mass (g)",
+       subtitle = "Sample of Three Penguin Species",
+       caption = "Data collected by Dr. Kristen Gorman") +
+  annotate("text", x = 220, y = 3700,
+           label = 
+             "Gentoo penguins form a distinct cluster\nwith higher body mass and longer flippers",
+           colour = "black",
+           fontface = "bold",
+           size = 2) +
+  theme_minimal(base_size = 10)
+```
+
+### Correlation Test: Flipper Length vs Body Mass
+```{r correlation_test}
+cor.test(penguins$flipper_length_mm, penguins$body_mass_g,
+         use = "complete.obs")
+```
+
+---
+
+## Conclusions
+
+Overall, the analysis reveals clear morphological differences among penguin species and strong relationships between physical traits and their habitat distribution.
+
+**Which species tends to be the largest overall?**
+Gentoo penguins appear to be the largest species overall, exhibiting the highest average body mass and the longest flippers.
+
+**Is there a visible relationship between flipper length and body mass?**
+Yes — penguins with longer flippers tend to have larger body mass. The three species also cluster into distinct groups.
+
+**Is there a statistically significant correlation between flipper length and body mass?**
+Yes — a Pearson correlation test confirms a strong positive correlation (r = 0.87, p < 0.001), meaning penguins with longer flippers significantly tend to have greater body mass.
+
+**Which island has the most biodiversity?**
+Both Biscoe and Dream Islands host two penguin species each, making them equally biodiverse. Torgersen Island is the least biodiverse, hosting only Adelie penguins. Notably, Adelie is the only species found across all three islands.
+
+**Which species has the highest bill ratio?**
+Gentoo penguins have the highest mean bill ratio (3.18), meaning they have longer, narrower bills relative to their depth. Adelie penguins have the lowest ratio (2.12), with shorter, deeper bills.
+
+**What is the male vs female distribution across species?**
+The sex distribution is remarkably balanced — Adelie and Chinstrap penguins are exactly 50/50 male to female, while Gentoo penguins are very close at 48.7% female and 51.3% male.
+
+Missing values were minimal and handled using na.rm = TRUE, ensuring that summary statistics and visualizations were not biased by incomplete observations.
+
+---
+
+## What I Learned
+
+- How to perform exploratory data analysis (EDA) using tidyverse in R
+- How to handle missing values using `na.rm = TRUE` and `filter(!is.na())`
+- How to create and interpret multiple visualization types including violin plots, scatter plots, and bar charts using ggplot2
+- How to engineer new features from existing data using `mutate()`
+- How to quantify relationships between variables using `cor.test()`
+- The importance of grouping data with `group_by()` before summarising
+- How to use `arrange()`, `select()`, `count()`, and `summarise()` to explore and understand data
+
+---
+
+*Analysis completed by Daniel Eniola | Data source: palmerpenguins R package*
