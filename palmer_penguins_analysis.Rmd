@@ -62,6 +62,17 @@ penguins %>%
   )
 ```
 
+### Average Body Mass and Flipper Length by Species
+```{r body_mass_by_species}
+penguins %>%
+  group_by(species) %>%
+  summarise(
+    avg_body_mass = mean(body_mass_g, na.rm = TRUE),
+    avg_flipper_length = mean(flipper_length_mm, na.rm = TRUE)
+  ) %>%
+  arrange(-avg_body_mass)
+```
+
 ### Heaviest Island by Average Body Mass
 ```{r island_mass}
 penguins %>%
