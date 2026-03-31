@@ -7,15 +7,14 @@ The goal of this analysis is to examine the physical characteristics of each spe
 
 ---
 
-## Business Question
+## Objective
 **How do the three penguin species differ in physical characteristics, and what ecological patterns exist across their island habitats?**
 
 ---
 
 ## Tools Used
 - **R**: data cleaning, analysis, and visualization
-- **tidyverse**: data manipulation and visualization
-- **ggplot2**: data visualization
+- **tidyverse**: data manipulation and visualization (includes ggplot2)
 - **palmerpenguins**: dataset
 - **RStudio**: development environment
 
@@ -27,7 +26,7 @@ The goal of this analysis is to examine the physical characteristics of each spe
 - **Gentoo penguins have the highest bill ratio (3.18)**, meaning longer, narrower bills relative to depth
 - **There is a strong positive correlation (r = 0.87)** between flipper length and body mass across all species
 - **Sex distribution is remarkably balanced**: Adelie and Chinstrap are exactly 50/50, Gentoo is 48.7% female and 51.3% male
-- **Biscoe Island has the heaviest penguins** on average (avg body mass ~4,716g), dominated by Gentoo
+- **Biscoe Island has the heaviest penguins** on average (~4,716g), dominated by Gentoo
 - **Adelie is the only species found across all three islands**
 
 ---
@@ -50,7 +49,8 @@ The goal of this analysis is to examine the physical characteristics of each spe
 ---
 
 ## Data Source
-[palmerpenguins R package](https://allisonhorst.github.io/palmerpenguins/): data collected by Dr. Kristen Gorman, Palmer Station Antarctica LTER.
+[palmerpenguins R package](https://allisonhorst.github.io/palmerpenguins/): data collected 
+by Dr. Kristen Gorman, Palmer Station Antarctica LTER.
 
 ---
 
