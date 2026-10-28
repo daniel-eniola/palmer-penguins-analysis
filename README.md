@@ -1,6 +1,3 @@
-Here it is. Copy everything inside the box:
-
-````markdown
 # Palmer Penguins Analysis
 
 ## Overview
@@ -78,6 +75,3 @@ This question is explored through summary statistics, visualization, and correla
 ---
 
 *Analysis completed by Daniel Eniola*
-````
-
-In GitHub, open `README.md`, click the pencil icon, select all the text, paste this over it, and commit. After that, click the report link in the README to make sure it opens.
