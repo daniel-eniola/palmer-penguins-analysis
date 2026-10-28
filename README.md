@@ -1,3 +1,6 @@
+Here it is. Copy everything inside the box:
+
+````markdown
 # Palmer Penguins Analysis
 
 ## Overview
@@ -5,6 +8,8 @@
 This project presents an exploratory data analysis (EDA) of the Palmer Penguins dataset, focusing on identifying differences in physical characteristics across species and uncovering ecological patterns across island habitats.
 
 The dataset contains observations of 344 penguins from three species: Adelie, Chinstrap, and Gentoo, collected across three islands in the Palmer Archipelago, Antarctica by Dr. Kristen Gorman.
+
+🔗 **[View Full Report (HTML)](https://daniel-eniola.github.io/palmer-penguins-analysis/palmer_penguins_analysis.html)**
 
 ---
 
@@ -60,6 +65,7 @@ This question is explored through summary statistics, visualization, and correla
 ## Files
 
 * `palmer_penguins_analysis.Rmd`: full analysis with code and explanations
+* `palmer_penguins_analysis.html`: knitted report (view it via the link above)
 * `palmer_penguins_analysis.pdf`: formatted report
 * `.png` files: exported data visualizations
 
@@ -72,3 +78,6 @@ This question is explored through summary statistics, visualization, and correla
 ---
 
 *Analysis completed by Daniel Eniola*
+````
+
+In GitHub, open `README.md`, click the pencil icon, select all the text, paste this over it, and commit. After that, click the report link in the README to make sure it opens.
